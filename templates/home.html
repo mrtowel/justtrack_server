@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% block extrahead %}
+
+{% endblock %}
+{% block content %}
+
+    <div class="jumbotron" id="map" style="height: 330px"></div>
+
+    <div class="row marketing">
+        <h4>Top users</h4>
+        <ul class="nav nav-tabs nav-justified">
+            <li><a href="#">Longest recent distance</a></li>
+            <li><a href="#">Observers count</a></li>
+        </ul>
+    </div>
+
+    {% block footer %}
+        <div class="footer">
+            <p>&copy; Mrtowel 2013</p>
+        </div>
+
+    {% endblock %}
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            var lat = 51.24322;
+            var lng = 22.565231;
+            var zoom = 2;
+            GMaps.geolocate({
+                success: function (position) {
+                    {#                    $map.setCenter(position.coords.latitude, position.coords.longitude);#}
+                    lat = position.coords.latitude;
+                    lng = position.coords.longitude;
+                    zoom = 10;
+                },
+                error: function (error) {
+                },
+                not_supported: function () {
+                    alert("Your browser does not support geolocation");
+                }
+
+            });
+            var $map = new GMaps({
+                div: '#map',
+                lat: lat,
+                lng: lng,
+                zoom: zoom,
+                zoomControl: true,
+                zoomControlOpt: {
+                    style: 'SMALL',
+                    position: 'TOP_LEFT'
+                }
+            });
+
+            {% for point in points %}
+                $map.addMarker({
+                    title: 'Lima',
+                    lat: {{ point.lat }},
+                    lng: {{ point.lon }},
+
+                    infoWindow: {
+                        content: '<strong><p>{{ point.user }}</p></strong><p>{{ point.time }}</p>',
+                        style: {
+                            color: 'blue'
+                        }
+                    }
+                });
+            {% endfor %}
+        });
+    </script>
+{% endblock %}
+
